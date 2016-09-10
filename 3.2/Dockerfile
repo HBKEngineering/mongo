@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:xenial
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r mongodb && useradd -r -g mongodb mongodb
@@ -56,18 +56,15 @@ RUN set -x \
 	&& mv /etc/mongod.conf /etc/mongod.conf.orig
 
 # Install Mongo DB Monitoring Agent 
-ADD https://cloud.mongodb.com/download/agent/monitoring/mongodb-mms-monitoring-agent_5.2.0.331-1_amd64.ubuntu1604.deb /tmp/
-RUN set -x \ 
-	&& dpkg -i /tmp/mongodb-mms-monitoring-agent_5.2.0.331-1_amd64.ubuntu1604.deb
-COPY monitoring-agent.config /etc/mongodb-mms/monitoring-agent.config
-RUN start mongodb-mms-monitoring-agent
+RUN apt-get update && apt-get install -y logrotate libsasl2-2 ca-certificates
+ADD https://cloud.mongodb.com/download/agent/monitoring/mongodb-mms-monitoring-agent_5.0.0.309-1_amd64.ubuntu1604.deb  mms.deb 
+RUN dpkg -i mms.deb
+RUN rm mms.deb
 
 # Install MongoDB Backup Agent
-ADD https://cloud.mongodb.com/download/agent/backup/mongodb-mms-backup-agent_4.5.0.412-1_amd64.deb /tmp/
-RUN set -x \ 
-	&& dpkg -i /tmp/mongodb-mms-backup-agent_4.5.0.412-1_amd64.deb
-COPY backup-agent.config /etc/mongodb-mms/backup-agent.config
-RUN start mongodb-mms-backup-agent
+ADD https://cloud.mongodb.com/download/agent/backup/mongodb-mms-backup-agent_4.5.0.412-1_amd64.deb mms.deb
+RUN dpkg -i mms.deb
+RUN rm mms.deb
 
 RUN mkdir -p /data/db /data/configdb \
 	&& chown -R mongodb:mongodb /data/db /data/configdb
@@ -77,4 +74,9 @@ COPY docker-entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 27017
+
+# USER mongodb-mms-agent
+# CMD ["mongodb-mms-monitoring-agent -conf /etc/mongodb-mms/monitoring-agent.config && mongod"]
+
 CMD ["mongod"]
+ 
