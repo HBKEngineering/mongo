@@ -62,6 +62,13 @@ RUN set -x \
 COPY monitoring-agent.config /etc/mongodb-mms/monitoring-agent.config
 RUN start mongodb-mms-monitoring-agent
 
+# Install MongoDB Backup Agent
+ADD https://cloud.mongodb.com/download/agent/backup/mongodb-mms-backup-agent_4.5.0.412-1_amd64.deb /tmp/
+RUN set -x \ 
+	&& dpkg -i /tmp/mongodb-mms-backup-agent_4.5.0.412-1_amd64.deb
+COPY backup-agent.config /etc/mongodb-mms/backup-agent.config
+RUN start mongodb-mms-backup-agent
+
 RUN mkdir -p /data/db /data/configdb \
 	&& chown -R mongodb:mongodb /data/db /data/configdb
 VOLUME /data/db /data/configdb

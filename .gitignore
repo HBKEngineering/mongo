@@ -1,3 +1,4 @@
-# Don't commit the monitoring agent config
+# Don't commit the agent configs
 
 */monitoring-agent.config
+*/backup-agent.config
