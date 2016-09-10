@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM ubuntu:14.04
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r mongodb && useradd -r -g mongodb mongodb
@@ -54,6 +54,14 @@ RUN set -x \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& rm -rf /var/lib/mongodb \
 	&& mv /etc/mongod.conf /etc/mongod.conf.orig
+
+# begin mms stuff
+ADD https://cloud.mongodb.com/download/agent/monitoring/mongodb-mms-monitoring-agent_5.2.0.331-1_amd64.ubuntu1604.deb /tmp/
+RUN set -x \ 
+	&& dpkg -i /tmp/mongodb-mms-monitoring-agent_5.2.0.331-1_amd64.ubuntu1604.deb
+COPY monitoring-agent.config /etc/mongodb-mms/monitoring-agent.config
+RUN start mongodb-mms-monitoring-agent
+# end mms stuff
 
 RUN mkdir -p /data/db /data/configdb \
 	&& chown -R mongodb:mongodb /data/db /data/configdb
