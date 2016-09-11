@@ -65,7 +65,7 @@ configure_backup_agent(){
 
 # actually run the functions
 configure_monitoring_agent
-# configure_backup_agent
+configure_backup_agent
 
 # -- ALLOW THE CONTAINER TO BE STARTED WITH `--USER` --
 
@@ -80,5 +80,10 @@ if [ "$1" = 'mongod' ]; then
 		set -- $numa "$@"
 	fi
 fi
+
+# Run the agents here, instead of in the Dockerfile, because you can only define 1 `cmd` action in Dockerfile, 
+# and we're interested in remaining close to the base mongodb dockerfile. This is dirty, but works.
+/usr/bin/mongodb-mms-monitoring-agent -conf  /etc/mongodb-mms/monitoring-agent.config &
+/usr/bin/mongodb-mms-backup-agent -c  /etc/mongodb-mms/backup-agent.config &
 
 exec "$@"

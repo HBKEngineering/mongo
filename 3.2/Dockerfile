@@ -55,7 +55,7 @@ RUN set -x \
 	&& rm -rf /var/lib/mongodb \
 	&& mv /etc/mongod.conf /etc/mongod.conf.orig
 
-# Install Mongo DB Monitoring Agent 
+# Install MongoDB Monitoring Agent 
 RUN apt-get update && apt-get install -y logrotate libsasl2-2 ca-certificates
 ADD https://cloud.mongodb.com/download/agent/monitoring/mongodb-mms-monitoring-agent_5.0.0.309-1_amd64.ubuntu1604.deb  mms.deb 
 RUN dpkg -i mms.deb
@@ -67,16 +67,14 @@ RUN dpkg -i mms.deb
 RUN rm mms.deb
 
 RUN mkdir -p /data/db /data/configdb \
-	&& chown -R mongodb:mongodb /data/db /data/configdb
+	&& chown -R mongodb:mongodb /data/db /data/configdb /etc/mongodb-mms/
 VOLUME /data/db /data/configdb
 
 COPY docker-entrypoint.sh /entrypoint.sh
+
+USER mongodb
 ENTRYPOINT ["/entrypoint.sh"]
-
 EXPOSE 27017
-
-# USER mongodb-mms-agent
-# CMD ["mongodb-mms-monitoring-agent -conf /etc/mongodb-mms/monitoring-agent.config && mongod"]
 
 CMD ["mongod"]
  
