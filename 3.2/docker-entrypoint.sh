@@ -5,7 +5,6 @@ if [ "${1:0:1}" = '-' ]; then
 	set -- mongod "$@"
 fi
 
-
 # --- CONFIGURE MONGO AGENT ---
 
 if [ ! "$MMS_API_KEY" ]; then
