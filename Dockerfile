@@ -67,7 +67,7 @@ RUN dpkg -i mms.deb
 RUN rm mms.deb
 
 RUN mkdir -p /data/db /data/configdb \
-	&& chown -R mongodb:mongodb /data/db /data/configdb 
+	&& chown -R mongodb:mongodb /data/db /data/configdb \
 	&& chmod -R 0777 /etc/mongodb-mms/
 VOLUME /data/db /data/configdb
 
