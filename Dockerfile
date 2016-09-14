@@ -57,12 +57,12 @@ RUN set -x \
 
 # Install MongoDB Monitoring Agent 
 RUN apt-get update && apt-get install -y logrotate libsasl2-2 ca-certificates
-ADD https://cloud.mongodb.com/download/agent/monitoring/mongodb-mms-monitoring-agent_5.0.0.309-1_amd64.ubuntu1604.deb  mms.deb 
+ADD https://cloud.mongodb.com/download/agent/monitoring/mongodb-mms-monitoring-agent_5.3.0.341-1_amd64.ubuntu1604.deb  mms.deb 
 RUN dpkg -i mms.deb
 RUN rm mms.deb
 
 # Install MongoDB Backup Agent
-ADD https://cloud.mongodb.com/download/agent/backup/mongodb-mms-backup-agent_4.5.0.412-1_amd64.deb mms.deb
+ADD https://cloud.mongodb.com/download/agent/backup/mongodb-mms-backup-agent_4.6.0.425-1_amd64.ubuntu1604.deb mms.deb
 RUN dpkg -i mms.deb
 RUN rm mms.deb
 
