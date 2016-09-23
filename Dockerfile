@@ -58,6 +58,6 @@ RUN set -x \
 RUN mkdir -p /data/db /data/configdb 
 
 VOLUME /data/db /data/configdb
-COPY config.sh /config.sh
 
+COPY config.sh /config.sh
 CMD ["./config.sh"]
