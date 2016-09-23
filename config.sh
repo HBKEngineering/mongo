@@ -24,17 +24,17 @@ mongo --host ${MONGODB1}:27017 <<EOF
         "members": [
             {
                 "_id": 0,
-                "host": "${MONGODB1}:27017",
+                "host": "${MONGODB1}:27001",
                 "priority": 2
             },
             {
                 "_id": 1,
-                "host": "${MONGODB2}:27017",
+                "host": "${MONGODB2}:27002",
                 "priority": 0
             },
             {
                 "_id": 2,
-                "host": "${MONGODB3}:27017",
+                "host": "${MONGODB3}:27003",
                 "priority": 0
             }
         ]
