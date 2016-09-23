@@ -11,7 +11,7 @@ RUN apt-get update \
 # grab gosu for easy step-down from root
 ENV GOSU_VERSION 1.7
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget curl && rm -rf /var/lib/apt/lists/* \
 	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
@@ -55,25 +55,9 @@ RUN set -x \
 	&& rm -rf /var/lib/mongodb \
 	&& mv /etc/mongod.conf /etc/mongod.conf.orig
 
-# Install MongoDB Monitoring Agent 
-RUN apt-get update && apt-get install -y logrotate libsasl2-2 ca-certificates
-ADD https://cloud.mongodb.com/download/agent/monitoring/mongodb-mms-monitoring-agent_5.3.0.341-1_amd64.ubuntu1604.deb  mms.deb 
-RUN dpkg -i mms.deb
-RUN rm mms.deb
+RUN mkdir -p /data/db /data/configdb 
 
-# Install MongoDB Backup Agent
-ADD https://cloud.mongodb.com/download/agent/backup/mongodb-mms-backup-agent_4.6.0.425-1_amd64.ubuntu1604.deb mms.deb
-RUN dpkg -i mms.deb
-RUN rm mms.deb
-
-RUN mkdir -p /data/db /data/configdb \
-	&& chown -R mongodb:mongodb /data/db /data/configdb \
-	&& chmod -R 0777 /etc/mongodb-mms/
 VOLUME /data/db /data/configdb
+COPY config.sh /config.sh
 
-COPY docker-entrypoint.sh /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
-EXPOSE 27017
-
-CMD ["mongod"]
+CMD ["./config.sh"]
